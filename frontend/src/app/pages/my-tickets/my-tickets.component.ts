@@ -8,44 +8,53 @@ import { Ticket } from '../../models';
   standalone: true,
   imports: [DatePipe],
   template: `
-    <h2>Biletat e Mia</h2>
-
-    @if (loading()) {
-      <p>Duke ngarkuar biletat...</p>
-    } @else if (tickets().length === 0) {
-      <p>Nuk ke blerë asnjë biletë ende.</p>
-    } @else {
-      <div class="tickets-grid">
-        @for (ticket of tickets(); track ticket._id) {
-          <div class="ticket-card" [class.used]="ticket.isUsed">
-            <div class="ticket-info">
-              <span class="status-badge" [class.badge-used]="ticket.isUsed">
-                {{ ticket.isUsed ? 'E PËRDORUR' : 'E VLEFSHME' }}
-              </span>
-              <h3>{{ ticket.eventId.title }}</h3>
-              <p>📍 {{ ticket.eventId.venue }}</p>
-              <p>📅 {{ ticket.eventId.date | date:'medium' }}</p>
-              <p>💺 <strong>Ulësja:</strong> {{ ticket.seatNumber }} • <strong>Çmimi:</strong> {{ ticket.pricePaid }}€</p>
-              <p class="ticket-id"><strong>Ticket ID:</strong> <code>{{ ticket._id }}</code></p>
-            </div>
-
-            <div class="qr-box">
-              <img [src]="ticket.qrCodeData" alt="QR Code i Biletës" />
-            </div>
-          </div>
-        }
+    <section>
+      <div class="mb-9 border-b border-white/10 pb-8">
+        <span class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Llogaria jote</span>
+        <h1 class="mt-2 text-3xl font-black tracking-tight text-white sm:text-4xl">Biletat e mia</h1>
+        <p class="mt-3 text-sm text-slate-400">Mbaji biletat digjitale pranë vetes për hyrje të shpejtë.</p>
       </div>
-    }
-  `,
-  styles: [`
-    .tickets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
-    .ticket-card { display: flex; justify-content: space-between; align-items: center; border: 1px solid #cbd5e1; border-radius: 10px; padding: 1.25rem; background: white; gap: 1rem; }
-    .ticket-card.used { opacity: 0.7; background: #f8fafc; }
-    .status-badge { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #dcfce7; color: #166534; }
-    .badge-used { background: #fee2e2; color: #991b1b; }
-    .ticket-id { font-size: 0.8rem; color: #475569; word-break: break-all; }
-    .qr-box img { width: 130px; height: 130px; border: 1px solid #e2e8f0; border-radius: 6px; }
-  `]
+
+      @if (loading()) {
+        <div class="rounded-2xl border border-white/10 bg-slate-900 p-8 text-center text-slate-400">Duke ngarkuar biletat...</div>
+      } @else if (tickets().length === 0) {
+        <div class="rounded-3xl border border-dashed border-white/15 bg-slate-900/50 px-6 py-16 text-center">
+          <span class="mx-auto grid size-14 place-items-center rounded-2xl bg-indigo-400/10 text-2xl text-indigo-200">▤</span>
+          <h2 class="mt-5 text-xl font-bold text-white">Ende nuk ke bileta</h2>
+          <p class="mt-2 text-sm text-slate-400">Biletat e blera do të shfaqen këtu.</p>
+        </div>
+      } @else {
+        <div class="grid gap-5 xl:grid-cols-2">
+          @for (ticket of tickets(); track ticket._id) {
+            <article class="flex flex-col justify-between gap-5 overflow-hidden rounded-2xl border border-white/10 bg-slate-900 p-5 transition sm:flex-row sm:items-center sm:p-6"
+              [class.opacity-70]="ticket.isUsed">
+              <div class="min-w-0">
+                <span class="inline-flex rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[11px] font-bold tracking-wider text-emerald-200"
+                  [class.border-rose-400/20]="ticket.isUsed"
+                  [class.bg-rose-400/10]="ticket.isUsed"
+                  [class.text-rose-200]="ticket.isUsed">
+                  {{ ticket.isUsed ? 'E PËRDORUR' : 'E VLEFSHME' }}
+                </span>
+                <h2 class="mt-4 text-xl font-bold text-white">{{ ticket.eventId.title }}</h2>
+                <div class="mt-3 space-y-1.5 text-sm text-slate-400">
+                  <p>⌖ {{ ticket.eventId.venue }}</p>
+                  <p>◷ {{ ticket.eventId.date | date:'medium' }}</p>
+                  <p>Ulësja <strong class="text-slate-200">{{ ticket.seatNumber }}</strong> · <strong class="text-slate-200">{{ ticket.pricePaid }}€</strong></p>
+                </div>
+                <p class="mt-4 break-all text-xs text-slate-500">
+                  <strong class="text-slate-400">Ticket ID:</strong> <code>{{ ticket._id }}</code>
+                </p>
+              </div>
+
+              <div class="grid shrink-0 place-items-center self-start rounded-2xl bg-white p-2 sm:self-center">
+                <img class="size-32" [src]="ticket.qrCodeData" alt="QR Code i Biletës" />
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+  `
 })
 export class MyTicketsComponent implements OnInit {
   private api = inject(ApiService);

@@ -7,42 +7,47 @@ import { ApiService } from '../../services/api.service';
   standalone: true,
   imports: [FormsModule],
   template: `
-    <div class="validate-card">
-      <h2>Verifikimi i Biletës (Check-In)</h2>
-      <p>Vendos ID-në e biletës për ta verifikuar dhe shënuar si të përdorur.</p>
+    <section class="mx-auto max-w-2xl">
+      <div class="mb-7">
+        <span class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Paneli i organizatorit</span>
+        <h1 class="mt-2 text-3xl font-black tracking-tight text-white sm:text-4xl">Verifikimi i biletës</h1>
+        <p class="mt-3 text-sm leading-6 text-slate-400">Kontrollo biletën dhe shënoje si të përdorur në hyrje.</p>
+      </div>
 
-      <form (ngSubmit)="onValidate()">
-        <input
-          type="text"
-          [(ngModel)]="ticketId"
-          name="ticketId"
-          placeholder="Ngjit Ticket ID këtu..."
-          required />
-        <button type="submit" [disabled]="loading()">
-          {{ loading() ? 'Duke verifikuar...' : 'Verifiko Biletën' }}
-        </button>
-      </form>
+      <div class="rounded-3xl border border-white/10 bg-slate-900/80 p-6 shadow-2xl shadow-black/20 sm:p-8">
+        <form (ngSubmit)="onValidate()" class="space-y-4">
+          <div>
+            <label for="ticket-id" class="mb-2 block text-sm font-medium text-slate-300">ID e biletës</label>
+            <input id="ticket-id" type="text" [(ngModel)]="ticketId" name="ticketId" placeholder="Ngjit Ticket ID këtu..." required
+              class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 font-mono text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10" />
+          </div>
+          <button type="submit" [disabled]="loading()"
+            class="w-full rounded-xl bg-indigo-500 px-4 py-3 font-semibold text-white transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-60">
+            {{ loading() ? 'Duke verifikuar...' : 'Verifiko biletën' }}
+          </button>
+        </form>
 
-      @if (result(); as res) {
-        <div class="result-box" [class.valid]="res.valid" [class.invalid]="!res.valid">
-          <h3>{{ res.valid ? '✅ Hyrja u Aprovua' : '❌ Biletë e Pavlefshme' }}</h3>
-          <p>{{ res.message }}</p>
-          @if (res.ticket) {
-            <p><strong>Eventi:</strong> {{ res.ticket.eventId.title }}</p>
-            <p><strong>Ulësja:</strong> {{ res.ticket.seatNumber }}</p>
-          }
-        </div>
-      }
-    </div>
-  `,
-  styles: [`
-    .validate-card { max-width: 480px; margin: 2.5rem auto; padding: 2rem; border: 1px solid #ddd; border-radius: 8px; background: white; }
-    input { width: 100%; padding: 0.7rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; margin-bottom: 1rem; font-family: monospace; }
-    button { width: 100%; padding: 0.75rem; background: #0f172a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-    .result-box { margin-top: 1.5rem; padding: 1rem; border-radius: 6px; }
-    .valid { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-    .invalid { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-  `]
+        @if (result(); as res) {
+          <div class="mt-6 rounded-2xl border p-5"
+            [class.border-emerald-400/20]="res.valid"
+            [class.bg-emerald-400/10]="res.valid"
+            [class.text-emerald-100]="res.valid"
+            [class.border-rose-400/20]="!res.valid"
+            [class.bg-rose-400/10]="!res.valid"
+            [class.text-rose-100]="!res.valid">
+            <h2 class="text-lg font-bold">{{ res.valid ? 'Hyrja u aprovua' : 'Biletë e pavlefshme' }}</h2>
+            <p class="mt-2 text-sm">{{ res.message }}</p>
+            @if (res.ticket) {
+              <div class="mt-4 space-y-1 border-t border-current/10 pt-4 text-sm">
+                <p><strong>Eventi:</strong> {{ res.ticket.eventId.title }}</p>
+                <p><strong>Ulësja:</strong> {{ res.ticket.seatNumber }}</p>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </section>
+  `
 })
 export class ValidateTicketComponent {
   private api = inject(ApiService);

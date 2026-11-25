@@ -8,33 +8,48 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [FormsModule, RouterLink],
   template: `
-    <div class="auth-card">
-      <h2>Kyçu në llogari</h2>
-      @if (error()) {
-        <div class="error-box">{{ error() }}</div>
-      }
-      <form (ngSubmit)="onSubmit()">
-        <label>Email</label>
-        <input type="email" [(ngModel)]="email" name="email" required />
+    <section class="flex min-h-[65vh] items-center justify-center py-8">
+      <div class="w-full max-w-md rounded-3xl border border-white/10 bg-slate-900/80 p-7 shadow-2xl shadow-indigo-950/30 sm:p-10">
+        <div class="mb-8">
+          <span class="mb-4 inline-flex rounded-full border border-indigo-400/20 bg-indigo-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-indigo-200">
+            Mirë se u ktheve
+          </span>
+          <h1 class="text-3xl font-bold tracking-tight text-white">Kyçu në llogari</h1>
+          <p class="mt-2 text-sm leading-6 text-slate-400">Hyr për të vazhduar te eventet dhe biletat e tua.</p>
+        </div>
 
-        <label>Fjalëkalimi</label>
-        <input type="password" [(ngModel)]="password" name="password" required />
+        @if (error()) {
+          <div role="alert" class="mb-5 rounded-xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">
+            {{ error() }}
+          </div>
+        }
 
-        <button type="submit" [disabled]="loading()">
-          {{ loading() ? 'Duke u kyçur...' : 'Kyçu' }}
-        </button>
-      </form>
-      <p>Nuk ke llogari? <a routerLink="/register">Regjistrohu këtu</a></p>
-    </div>
-  `,
-  styles: [`
-    .auth-card { max-width: 400px; margin: 3rem auto; padding: 2rem; border: 1px solid #ddd; border-radius: 8px; }
-    label { display: block; margin-top: 1rem; font-weight: 600; }
-    input { width: 100%; padding: 0.6rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-    button { width: 100%; margin-top: 1.5rem; padding: 0.75rem; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; }
-    button:disabled { opacity: 0.6; }
-    .error-box { background: #fee2e2; color: #b91c1c; padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem; }
-  `]
+        <form (ngSubmit)="onSubmit()" class="space-y-5">
+          <div>
+            <label for="login-email" class="mb-2 block text-sm font-medium text-slate-300">Email</label>
+            <input id="login-email" type="email" [(ngModel)]="email" name="email" autocomplete="email" required
+              class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10" />
+          </div>
+
+          <div>
+            <label for="login-password" class="mb-2 block text-sm font-medium text-slate-300">Fjalëkalimi</label>
+            <input id="login-password" type="password" [(ngModel)]="password" name="password" autocomplete="current-password" required
+              class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10" />
+          </div>
+
+          <button type="submit" [disabled]="loading()"
+            class="w-full rounded-xl bg-indigo-500 px-4 py-3 font-semibold text-white shadow-lg shadow-indigo-950/40 transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-60">
+            {{ loading() ? 'Duke u kyçur...' : 'Kyçu' }}
+          </button>
+        </form>
+
+        <p class="mt-7 text-center text-sm text-slate-400">
+          Nuk ke llogari?
+          <a routerLink="/register" class="font-semibold text-indigo-300 transition hover:text-indigo-200">Regjistrohu këtu</a>
+        </p>
+      </div>
+    </section>
+  `
 })
 export class LoginComponent {
   private auth = inject(AuthService);

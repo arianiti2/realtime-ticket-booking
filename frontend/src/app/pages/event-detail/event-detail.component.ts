@@ -13,84 +13,90 @@ import { EventItem, Seat } from '../../models';
   imports: [DatePipe],
   template: `
     @if (event(); as ev) {
-      <div class="header">
-        <h2>{{ ev.title }}</h2>
-        <p>📍 {{ ev.venue }} • 📅 {{ ev.date | date:'medium' }}</p>
-      </div>
+      <section>
+        <div class="mb-8 rounded-3xl border border-white/10 bg-gradient-to-br from-indigo-500/15 via-slate-900 to-slate-900 p-6 sm:p-8">
+          <span class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Zgjedhja e ulëseve</span>
+          <h1 class="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">{{ ev.title }}</h1>
+          <p class="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-300">
+            <span>⌖ {{ ev.venue }}</span>
+            <span>◷ {{ ev.date | date:'medium' }}</span>
+          </p>
+        </div>
 
-      @if (errorMsg()) {
-        <div class="alert-error">{{ errorMsg() }}</div>
-      }
-
-      <div class="legend">
-        <span><i class="box available"></i> E Lirë</span>
-        <span><i class="box mine"></i> E Bllokuar nga Ti</span>
-        <span><i class="box locked"></i> E Bllokuar (Tjetër)</span>
-        <span><i class="box booked"></i> E Rezervuar</span>
-      </div>
-
-      <div class="stage">SKENA / STAGE</div>
-
-      <div class="seat-map">
-        @for (row of groupedRows(); track row.letter) {
-          <div class="seat-row">
-            <span class="row-label">{{ row.letter }}</span>
-            <div class="seats">
-              @for (seat of row.seats; track seat.seatNumber) {
-                <button
-                  class="seat"
-                  [class.available]="seat.status === 'AVAILABLE'"
-                  [class.mine]="isMyLock(seat)"
-                  [class.locked]="seat.status === 'LOCKED' && !isMyLock(seat)"
-                  [class.booked]="seat.status === 'BOOKED'"
-                  [disabled]="seat.status === 'BOOKED' || (seat.status === 'LOCKED' && !isMyLock(seat))"
-                  (click)="onSeatClick(seat)">
-                  {{ seat.seatNumber }}
-                  <small>{{ seat.price }}€</small>
-                </button>
-              }
-            </div>
+        @if (errorMsg()) {
+          <div role="alert" class="mb-6 rounded-xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">
+            {{ errorMsg() }}
           </div>
         }
-      </div>
 
-      @if (myLockedSeat(); as selected) {
-        <div class="checkout-bar">
-          <div>
-            <strong>Ulësja e zgjedhur: {{ selected.seatNumber }}</strong> ({{ selected.price }}€)
-            <div class="timer">⏳ Koha e mbetur e bllokimit: <strong>{{ countdown() }}</strong></div>
-          </div>
-          <button class="btn-checkout" [disabled]="checkingOut()" (click)="checkout(selected.seatNumber)">
-            {{ checkingOut() ? 'Duke gjeneruar biletën...' : 'Konfirmo & Blej Biletën' }}
-          </button>
+        <div class="mb-6 flex flex-wrap gap-x-5 gap-y-3 rounded-2xl border border-white/10 bg-slate-900/60 p-4 text-xs text-slate-300 sm:text-sm">
+          <span class="flex items-center gap-2"><i class="size-3 rounded-sm bg-emerald-500"></i>E lirë</span>
+          <span class="flex items-center gap-2"><i class="size-3 rounded-sm bg-indigo-500"></i>E bllokuar nga ti</span>
+          <span class="flex items-center gap-2"><i class="size-3 rounded-sm bg-amber-500"></i>E bllokuar (tjetër)</span>
+          <span class="flex items-center gap-2"><i class="size-3 rounded-sm bg-slate-600"></i>E rezervuar</span>
         </div>
-      }
+
+        <div class="mb-8 rounded-xl border border-indigo-300/10 bg-gradient-to-b from-slate-700 to-slate-800 px-4 py-3 text-center text-xs font-bold tracking-[0.35em] text-slate-200 shadow-inner sm:text-sm">
+          SKENA
+        </div>
+
+        <div class="overflow-x-auto rounded-3xl border border-white/10 bg-slate-900/50 px-3 py-6 sm:px-6 sm:py-8">
+          <div class="mx-auto flex min-w-max flex-col items-center gap-3">
+            @for (row of groupedRows(); track row.letter) {
+              <div class="flex items-center gap-2 sm:gap-4">
+                <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-white/5 text-sm font-bold text-slate-400">{{ row.letter }}</span>
+                <div class="flex flex-wrap justify-center gap-2">
+                  @for (seat of row.seats; track seat.seatNumber) {
+                    <button
+                      class="flex size-14 flex-col items-center justify-center rounded-xl border text-xs font-bold shadow-sm transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 disabled:cursor-not-allowed disabled:opacity-70 sm:size-16"
+                      [class.border-emerald-500]="seat.status === 'AVAILABLE'"
+                      [class.bg-emerald-950]="seat.status === 'AVAILABLE'"
+                      [class.text-emerald-200]="seat.status === 'AVAILABLE'"
+                      [class.hover:bg-emerald-900]="seat.status === 'AVAILABLE'"
+                      [class.border-indigo-300]="isMyLock(seat)"
+                      [class.bg-indigo-500]="isMyLock(seat)"
+                      [class.text-white]="isMyLock(seat)"
+                      [class.border-amber-500]="seat.status === 'LOCKED' && !isMyLock(seat)"
+                      [class.bg-amber-950]="seat.status === 'LOCKED' && !isMyLock(seat)"
+                      [class.text-amber-200]="seat.status === 'LOCKED' && !isMyLock(seat)"
+                      [class.border-slate-700]="seat.status === 'BOOKED'"
+                      [class.bg-slate-800]="seat.status === 'BOOKED'"
+                      [class.text-slate-500]="seat.status === 'BOOKED'"
+                      [class.line-through]="seat.status === 'BOOKED'"
+                      [disabled]="seat.status === 'BOOKED' || (seat.status === 'LOCKED' && !isMyLock(seat))"
+                      [attr.aria-label]="'Ulësja ' + seat.seatNumber + ', ' + seat.status + ', ' + seat.price + ' euro'"
+                      (click)="onSeatClick(seat)">
+                      {{ seat.seatNumber }}
+                      <small class="mt-0.5 text-[10px] font-medium opacity-80">{{ seat.price }}€</small>
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        @if (myLockedSeat(); as selected) {
+          <div class="fixed inset-x-3 bottom-3 z-20 flex flex-col gap-4 rounded-2xl border border-white/10 bg-slate-900/95 p-4 text-white shadow-2xl shadow-black/50 backdrop-blur-xl sm:inset-x-6 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <div>
+              <strong class="text-sm sm:text-base">Ulësja {{ selected.seatNumber }} · {{ selected.price }}€</strong>
+              <div class="mt-1 text-xs text-amber-300 sm:text-sm">
+                Koha e mbetur e bllokimit: <strong>{{ countdown() }}</strong>
+              </div>
+            </div>
+            <button [disabled]="checkingOut()" (click)="checkout(selected.seatNumber)"
+              class="rounded-xl bg-emerald-500 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base">
+              {{ checkingOut() ? 'Duke gjeneruar biletën...' : 'Konfirmo & blej biletën' }}
+            </button>
+          </div>
+        }
+      </section>
     } @else {
-      <p>Duke ngarkuar hartën e ulëseve...</p>
+      <div class="rounded-2xl border border-white/10 bg-slate-900 p-8 text-center text-slate-400">
+        Duke ngarkuar hartën e ulëseve...
+      </div>
     }
-  `,
-  styles: [`
-    .header { margin-bottom: 1rem; }
-    .alert-error { background: #fee2e2; color: #b91c1c; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
-    .legend { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; font-size: 0.9rem; }
-    .box { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: middle; margin-right: 5px; }
-    .stage { text-align: center; background: #cbd5e1; color: #334155; font-weight: bold; padding: 0.5rem; border-radius: 4px; margin-bottom: 2rem; letter-spacing: 2px; }
-    .seat-map { display: flex; flex-direction: column; gap: 0.6rem; align-items: center; }
-    .seat-row { display: flex; align-items: center; gap: 0.75rem; }
-    .row-label { width: 24px; font-weight: bold; color: #475569; }
-    .seats { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-    .seat { width: 54px; height: 48px; border: none; border-radius: 6px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8rem; }
-    .seat small { font-size: 0.68rem; opacity: 0.85; }
-    .available { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-    .available:hover { background: #bbf7d0; }
-    .mine { background: #2563eb; color: white; }
-    .locked { background: #fef08a; color: #854d0e; cursor: not-allowed; }
-    .booked { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; text-decoration: line-through; }
-    .checkout-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -4px 12px rgba(0,0,0,0.15); }
-    .timer { color: #fbbf24; font-size: 0.9rem; margin-top: 0.25rem; }
-    .btn-checkout { background: #16a34a; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; }
-    .btn-checkout:disabled { opacity: 0.6; }
-  `]
+  `
 })
 export class EventDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);

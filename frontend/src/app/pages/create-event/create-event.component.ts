@@ -8,62 +8,80 @@ import { ApiService } from '../../services/api.service';
   standalone: true,
   imports: [FormsModule],
   template: `
-    <div class="form-card">
-      <h2>Krijo Event të Ri</h2>
-      @if (error()) {
-        <div class="error-box">{{ error() }}</div>
-      }
+    <section class="mx-auto max-w-3xl">
+      <div class="mb-7">
+        <span class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">Paneli i organizatorit</span>
+        <h1 class="mt-2 text-3xl font-black tracking-tight text-white sm:text-4xl">Krijo event të ri</h1>
+        <p class="mt-3 text-sm text-slate-400">Plotëso detajet dhe përgatit hartën e ulëseve për eventin.</p>
+      </div>
 
-      <form (ngSubmit)="onSubmit()">
-        <label>Titulli i Eventit</label>
-        <input type="text" [(ngModel)]="title" name="title" placeholder="p.sh. Koncert Live" required />
-
-        <label>Data & Ora</label>
-        <input type="datetime-local" [(ngModel)]="date" name="date" required />
-
-        <label>Vendi (Venue)</label>
-        <input type="text" [(ngModel)]="venue" name="venue" placeholder="p.sh. Pallati i Rinisë" required />
-
-        <div class="row-2">
-          <div>
-            <label>Numri i Rreshtave (max 26)</label>
-            <input type="number" [(ngModel)]="rows" name="rows" min="1" max="26" required />
+      <div class="rounded-3xl border border-white/10 bg-slate-900/80 p-6 shadow-2xl shadow-black/20 sm:p-8">
+        @if (error()) {
+          <div role="alert" class="mb-6 rounded-xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">
+            {{ error() }}
           </div>
-          <div>
-            <label>Ulëse për Rresht</label>
-            <input type="number" [(ngModel)]="seatsPerRow" name="seatsPerRow" min="1" max="30" required />
-          </div>
-        </div>
+        }
 
-        <label>Rreshtat VIP (të ndarë me presje, p.sh. A, B)</label>
-        <input type="text" [(ngModel)]="vipRowsInput" name="vipRowsInput" placeholder="A, B" />
-
-        <div class="row-2">
+        <form (ngSubmit)="onSubmit()" class="space-y-5">
           <div>
-            <label>Çmimi VIP (€)</label>
-            <input type="number" [(ngModel)]="vipPrice" name="vipPrice" min="0" required />
+            <label for="event-title" class="mb-2 block text-sm font-medium text-slate-300">Titulli i eventit</label>
+            <input id="event-title" type="text" [(ngModel)]="title" name="title" placeholder="p.sh. Koncert Live" required
+              class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10" />
           </div>
-          <div>
-            <label>Çmimi Standard (€)</label>
-            <input type="number" [(ngModel)]="standardPrice" name="standardPrice" min="0" required />
-          </div>
-        </div>
 
-        <button type="submit" [disabled]="loading()">
-          {{ loading() ? 'Duke krijuar...' : 'Publiko Eventin' }}
-        </button>
-      </form>
-    </div>
-  `,
-  styles: [`
-    .form-card { max-width: 520px; margin: 2rem auto; padding: 2rem; border: 1px solid #ddd; border-radius: 8px; background: white; }
-    label { display: block; margin-top: 1rem; font-weight: 600; }
-    input { width: 100%; padding: 0.6rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    button { width: 100%; margin-top: 1.5rem; padding: 0.8rem; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-    button:disabled { opacity: 0.6; }
-    .error-box { background: #fee2e2; color: #b91c1c; padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem; }
-  `]
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="event-date" class="mb-2 block text-sm font-medium text-slate-300">Data dhe ora</label>
+              <input id="event-date" type="datetime-local" [(ngModel)]="date" name="date" required
+                class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10" />
+            </div>
+            <div>
+              <label for="event-venue" class="mb-2 block text-sm font-medium text-slate-300">Vendi</label>
+              <input id="event-venue" type="text" [(ngModel)]="venue" name="venue" placeholder="p.sh. Pallati i Rinisë" required
+                class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10" />
+            </div>
+          </div>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="event-rows" class="mb-2 block text-sm font-medium text-slate-300">Numri i rreshtave (max 26)</label>
+              <input id="event-rows" type="number" [(ngModel)]="rows" name="rows" min="1" max="26" required
+                class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10" />
+            </div>
+            <div>
+              <label for="event-seats" class="mb-2 block text-sm font-medium text-slate-300">Ulëse për rresht</label>
+              <input id="event-seats" type="number" [(ngModel)]="seatsPerRow" name="seatsPerRow" min="1" max="30" required
+                class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10" />
+            </div>
+          </div>
+
+          <div>
+            <label for="event-vip-rows" class="mb-2 block text-sm font-medium text-slate-300">Rreshtat VIP (të ndarë me presje)</label>
+            <input id="event-vip-rows" type="text" [(ngModel)]="vipRowsInput" name="vipRowsInput" placeholder="A, B"
+              class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10" />
+          </div>
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="event-vip-price" class="mb-2 block text-sm font-medium text-slate-300">Çmimi VIP (€)</label>
+              <input id="event-vip-price" type="number" [(ngModel)]="vipPrice" name="vipPrice" min="0" required
+                class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10" />
+            </div>
+            <div>
+              <label for="event-standard-price" class="mb-2 block text-sm font-medium text-slate-300">Çmimi standard (€)</label>
+              <input id="event-standard-price" type="number" [(ngModel)]="standardPrice" name="standardPrice" min="0" required
+                class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10" />
+            </div>
+          </div>
+
+          <button type="submit" [disabled]="loading()"
+            class="w-full rounded-xl bg-indigo-500 px-4 py-3 font-semibold text-white shadow-lg shadow-indigo-950/40 transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-60">
+            {{ loading() ? 'Duke krijuar...' : 'Publiko eventin' }}
+          </button>
+        </form>
+      </div>
+    </section>
+  `
 })
 export class CreateEventComponent {
   private api = inject(ApiService);

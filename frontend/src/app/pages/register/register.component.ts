@@ -9,42 +9,63 @@ import { Role } from '../../models';
   standalone: true,
   imports: [FormsModule, RouterLink],
   template: `
-    <div class="auth-card">
-      <h2>Krijo llogari të re</h2>
-      @if (error()) {
-        <div class="error-box">{{ error() }}</div>
-      }
-      <form (ngSubmit)="onSubmit()">
-        <label>Emri i plotë</label>
-        <input type="text" [(ngModel)]="name" name="name" required />
+    <section class="flex min-h-[65vh] items-center justify-center py-8">
+      <div class="w-full max-w-lg rounded-3xl border border-white/10 bg-slate-900/80 p-7 shadow-2xl shadow-indigo-950/30 sm:p-10">
+        <div class="mb-7">
+          <span class="mb-4 inline-flex rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">
+            Fillo këtu
+          </span>
+          <h1 class="text-3xl font-bold tracking-tight text-white">Krijo llogari</h1>
+          <p class="mt-2 text-sm leading-6 text-slate-400">Regjistrohu dhe bëhu gati për eventin tënd të radhës.</p>
+        </div>
 
-        <label>Email</label>
-        <input type="email" [(ngModel)]="email" name="email" required />
+        @if (error()) {
+          <div role="alert" class="mb-5 rounded-xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">
+            {{ error() }}
+          </div>
+        }
 
-        <label>Fjalëkalimi (min. 6 karaktere)</label>
-        <input type="password" [(ngModel)]="password" name="password" minlength="6" required />
+        <form (ngSubmit)="onSubmit()" class="space-y-4">
+          <div>
+            <label for="register-name" class="mb-2 block text-sm font-medium text-slate-300">Emri i plotë</label>
+            <input id="register-name" type="text" [(ngModel)]="name" name="name" autocomplete="name" required
+              class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10" />
+          </div>
 
-        <label>Roli</label>
-        <select [(ngModel)]="role" name="role">
-          <option value="CLIENT">Klient (Blerës biletash)</option>
-          <option value="ORGANIZER">Organizator (Krijon evente & skanon bileta)</option>
-        </select>
+          <div>
+            <label for="register-email" class="mb-2 block text-sm font-medium text-slate-300">Email</label>
+            <input id="register-email" type="email" [(ngModel)]="email" name="email" autocomplete="email" required
+              class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10" />
+          </div>
 
-        <button type="submit" [disabled]="loading()">
-          {{ loading() ? 'Duke u regjistruar...' : 'Regjistrohu' }}
-        </button>
-      </form>
-      <p>Ke tashmë llogari? <a routerLink="/login">Kyçu këtu</a></p>
-    </div>
-  `,
-  styles: [`
-    .auth-card { max-width: 400px; margin: 3rem auto; padding: 2rem; border: 1px solid #ddd; border-radius: 8px; }
-    label { display: block; margin-top: 1rem; font-weight: 600; }
-    input, select { width: 100%; padding: 0.6rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-    button { width: 100%; margin-top: 1.5rem; padding: 0.75rem; background: #16a34a; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; }
-    button:disabled { opacity: 0.6; }
-    .error-box { background: #fee2e2; color: #b91c1c; padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem; }
-  `]
+          <div>
+            <label for="register-password" class="mb-2 block text-sm font-medium text-slate-300">Fjalëkalimi (min. 6 karaktere)</label>
+            <input id="register-password" type="password" [(ngModel)]="password" name="password" autocomplete="new-password" minlength="6" required
+              class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10" />
+          </div>
+
+          <div>
+            <label for="register-role" class="mb-2 block text-sm font-medium text-slate-300">Roli</label>
+            <select id="register-role" [(ngModel)]="role" name="role"
+              class="w-full rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/10">
+              <option value="CLIENT">Klient (Blerës biletash)</option>
+              <option value="ORGANIZER">Organizator (Krijon evente & skanon bileta)</option>
+            </select>
+          </div>
+
+          <button type="submit" [disabled]="loading()"
+            class="w-full rounded-xl bg-indigo-500 px-4 py-3 font-semibold text-white shadow-lg shadow-indigo-950/40 transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-60">
+            {{ loading() ? 'Duke u regjistruar...' : 'Regjistrohu' }}
+          </button>
+        </form>
+
+        <p class="mt-7 text-center text-sm text-slate-400">
+          Ke tashmë llogari?
+          <a routerLink="/login" class="font-semibold text-indigo-300 transition hover:text-indigo-200">Kyçu këtu</a>
+        </p>
+      </div>
+    </section>
+  `
 })
 export class RegisterComponent {
   private auth = inject(AuthService);
