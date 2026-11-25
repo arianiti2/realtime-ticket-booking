@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -9,7 +10,7 @@ const app: Application = express();
 
 // 1. CORS duhet të jetë i pari dhe të lejojë OPTIONS (preflight)
 app.use(cors({
-  origin: 'http://localhost:4200',
+  origin: process.env.CLIENT_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true

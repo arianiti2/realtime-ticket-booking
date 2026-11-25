@@ -6,10 +6,10 @@ import { connectDB } from './config/db';
 import { setupSockets } from './sockets/socketHandler';
 import { startReleaseSeatsJob } from './jobs/releaseSeatsJob';
 
-//ari
+
 dotenv.config();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 
 
 const server = http.createServer(app);
